@@ -29,17 +29,20 @@ from pyspark.sql import SQLContext
 from pyspark.sql.functions import substring
 
 sqlContext = SQLContext(sc)
-tweets = sqlContext.read.json("/twitter/gnip/public/charlotte.json")
-tweets.printSchema()
+tweets = sqlContext.read.json("/twitter/gnip/public/charlotte.json")  # Create an RDD called tweets
+
+tweets.count() # Count the number of items in the RDD
+
+tweets.printSchema()  # Print the schema for tweets
 ```
 
 ## Step 4: Basic GroupBy & Count Functions
 
 Next, let's explore two fields to groupby and count the tweets.
 
-First, we groupby the `verb` field which corresponds to Tweets (post) and Retweets (share). Notice, this dataset only includes posts as the filtering rules for this dataset excluded Retweets.
+First, we groupBy the `verb` field which corresponds to Tweets (post) and Retweets (share). Notice, this dataset only includes posts as the filtering rules for this dataset excluded Retweets.
 
-Next, we groupby the `geo.type` field to identify whether the geolocated Tweets are points or places (NULL).
+Next, we groupBy the `geo.type` field to identify whether the geolocated Tweets are points or places (NULL).
 
 ```{python}
 #Retweets (share) vs Original Content Posts (post)
@@ -50,6 +53,8 @@ tweets.groupBy("geo.type").count().show()
 ```
 
 ## Step 5: groupBy, filter and orderBy functions
+
+We can also include the filter and orderBy functions too to limit or sort our data.
 
 ```{python}
 from pyspark.sql.functions import col
@@ -73,6 +78,17 @@ df = sqlContext.sql("SELECT id, postedTime, body, actor.id, actor.displayName, a
 
 ## Further Links
 
+* [Spark Programming Guide](https://spark.apache.org/docs/latest/programming-guide.html)
+
 * [Spark SQL and DataFrames Tutorial](http://spark.apache.org/docs/latest/sql-programming-guide.html)
 
 * [Spark Machine Learning Library Tutorial](http://spark.apache.org/docs/latest/ml-guide.html)
+
+* [Automating PySpark Code through YARN and Oozie](http://gethue.com/how-to-schedule-spark-jobs-with-spark-on-yarn-and-oozie/)
+
+* [PySpark and nltk (Anaconda)](https://docs.continuum.io/anaconda-cluster/howto/spark-nltk)
+
+* [CY Lin's Big Data Analytics PySpark Tutorial](https://www.ee.columbia.edu/~cylin/course/bigdata/EECS6893-BigDataAnalytics-Lecture6.pdf)
+
+* [Matteo Redaelli's PySpark Twitter GitHub Repository](https://github.com/matteoredaelli/pyspark-examples)
+
