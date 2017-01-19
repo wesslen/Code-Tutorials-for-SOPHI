@@ -68,11 +68,11 @@ tweets.filter(tweets['actor.followersCount'] > 500000).select("actor.preferredUs
 
 ## Step 6: Create Spark DataFrame
 
-Alternatively to creating RDD's, you can create a Spark DataFrame by using the `sqlContext.sql` function.
+Alternatively to creating RDD's, you can create a Spark DataFrame by registering the dataframe as a table.
 
 ```{python}
-from pyspark.sql import SQLContext
-sqlContext = SQLContext(sc)
+tweets.registerTempTable('tweets')
+
 df = sqlContext.sql("SELECT id, postedTime, body, actor.id, actor.displayName, actor.location.displayName FROM tweets")
 ```
 
