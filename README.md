@@ -102,6 +102,8 @@ df.rdd.map(row2csv).coalesce(1).saveAsTextFile("file.csv")
 
 * [Spark Machine Learning Library Tutorial](http://spark.apache.org/docs/latest/ml-guide.html)
 
+* [Databrick's Spark Guides](https://docs.cloud.databricks.com/docs/latest/databricks_guide/index.html)
+
 * [Automating PySpark Code through YARN and Oozie](http://gethue.com/how-to-schedule-spark-jobs-with-spark-on-yarn-and-oozie/)
 
 * [PySpark and nltk (Anaconda)](https://docs.continuum.io/anaconda-cluster/howto/spark-nltk)
