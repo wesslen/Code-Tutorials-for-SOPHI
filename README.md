@@ -29,7 +29,7 @@ from pyspark.sql import SQLContext
 from pyspark.sql.functions import substring
 
 sqlContext = SQLContext(sc)
-tweets = sqlContext.read.json("/twitter/gnip/public/charlotte.json")  # Create an RDD called tweets
+tweets = sqlContext.read.json("/twitter/gnip/public/cities/Charlotte/charlotte062016.json")  # Create an RDD called tweets
 
 tweets.count() # Count the number of items in the RDD
 
@@ -76,6 +76,24 @@ sqlContext = SQLContext(sc)
 df = sqlContext.sql("SELECT id, postedTime, body, actor.id, actor.displayName, actor.location.displayName FROM tweets")
 ```
 
+## Step 7: Export to CSV
+
+This step will export your file to a CSV. There are better alternatives (namely [spark-csv](https://github.com/databricks/spark-csv)) but these are not yet running on SOPHI yet. We'll update the code with instructions when it is available.
+
+```{python}
+import csv
+import cStringIO
+
+def row2csv(row):
+    buffer = cStringIO.StringIO()
+    writer = csv.writer(buffer)
+    writer.writerow([str(s).encode("utf-8") for s in row])
+    buffer.seek(0)
+    return buffer.read().strip()
+
+df.rdd.map(row2csv).coalesce(1).saveAsTextFile("file.csv")
+```
+
 ## Further Links
 
 * [Spark Programming Guide](https://spark.apache.org/docs/latest/programming-guide.html)
@@ -91,4 +109,6 @@ df = sqlContext.sql("SELECT id, postedTime, body, actor.id, actor.displayName, a
 * [CY Lin's Big Data Analytics PySpark Tutorial](https://www.ee.columbia.edu/~cylin/course/bigdata/EECS6893-BigDataAnalytics-Lecture6.pdf)
 
 * [Matteo Redaelli's PySpark Twitter GitHub Repository](https://github.com/matteoredaelli/pyspark-examples)
+
+* [Duke Computational Statistics PySpark Tutorial](http://people.duke.edu/~ccc14/sta-663-2016/21A_Introduction_To_Spark.html)
 
