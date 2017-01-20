@@ -1,3 +1,7 @@
+## Introduction
+
+This code was built from [Databrick's LDA tutorial](https://docs.cloud.databricks.com/docs/latest/databricks_guide/index.html#05%20MLlib/2%20Algorithms/4%20LDA%20-%20Topic%20Modeling.html) with small modifications.
+
 ## Step 1: Load Twitter Gnip Dataset and create key-value pair
 
 ```{scala}
@@ -19,7 +23,11 @@ val corpus_df = rdd.zipWithIndex.toDF("body", "id")
 import org.apache.spark.ml.feature.RegexTokenizer
 
 // Set params for RegexTokenizer
-val tokenizer = new RegexTokenizer().setMinTokenLength(4).setInputCol("body").setOutputCol("tokens").setPattern("[\\W_]+")
+val tokenizer = new RegexTokenizer()
+    .setMinTokenLength(4)
+    .setInputCol("body")
+    .setOutputCol("tokens")
+    .setPattern("[\\W_]+")
 
 // Tokenize document
 val tokenized_df = tokenizer.transform(corpus_df)
@@ -74,7 +82,12 @@ val numTopics = 20
 import org.apache.spark.mllib.clustering.{LDA, OnlineLDAOptimizer}
 
 // Set LDA params
-val lda = new LDA().setOptimizer(new OnlineLDAOptimizer().setMiniBatchFraction(0.8)).setK(numTopics).setMaxIterations(10).setDocConcentration(-1).setTopicConcentration(-1) // use default values
+val lda = new LDA().setOptimizer(new OnlineLDAOptimizer()
+    .setMiniBatchFraction(0.8))
+    .setK(numTopics)
+    .setMaxIterations(10)
+    .setDocConcentration(-1) // use default values
+    .setTopicConcentration(-1) // use default values
 
 val ldaModel = lda.run(lda_countVector)
 
@@ -100,7 +113,12 @@ val numTopics = 20
 import org.apache.spark.mllib.clustering.{LDA, OnlineLDAOptimizer}
 
 // Set LDA parameters
-val em_lda = new LDA().setOptimizer("em").setK(numTopics).setMaxIterations(100).setDocConcentration(-1).setTopicConcentration(-1) // use default values
+val em_lda = new LDA()
+    .setOptimizer("em")
+    .setK(numTopics)
+    .setMaxIterations(100)
+    .setDocConcentration(-1) // use default values
+    .setTopicConcentration(-1) // use default values
 
 val em_ldaModel = em_lda.run(lda_countVector)
 
