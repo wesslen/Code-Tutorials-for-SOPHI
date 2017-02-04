@@ -55,7 +55,7 @@ def count_items(rdd, min_occurs=2, min_length=3):
             .filter(lambda x:x[1] >= min_occurs)\
             .filter(lambda x:x[0] is not None and len(x[0]) >= min_length)\
             .map(lambda x:(x[1],x[0])).sortByKey(False)\
-.map(lambda x: '\t'.join(unicode(i) for i in x)).repartition(1)
+            .map(lambda x: '\t'.join(unicode(i) for i in x)).repartition(1)
 ```
 
 ## Step 3: Count files for time, user, device, language and user location

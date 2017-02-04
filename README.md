@@ -10,7 +10,7 @@ This repository provides template code for running Spark on [SOPHI](http://sophi
 | --------------------------------------------------------------- |
 | [Twitter Gnip SQL-DataFrame Manipulation with PySpark](/code/PySpark-Dataframe-Processing.md)              |
 | [Twitter Gnip Summary Count Files with PySpark](/code/PySpark-Gnip-Twitter-Summary-Files.md)    |
-| [Twitter Gnip latent Dirichlet allocation with Scala](/code/Scala-LDA.md)    |
+| [Twitter Gnip Latent Dirichlet Allocation with Scala](/code/Scala-LDA.md)    |
 
 ## How to access SOPHI
 
