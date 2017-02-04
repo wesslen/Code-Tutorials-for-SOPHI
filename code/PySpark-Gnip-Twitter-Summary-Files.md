@@ -73,22 +73,46 @@ tweets = tweets.withColumn('HourStamp',substring("postedTime",1,13)).withColumn(
 def toCSVLine(data):
   return '\t'.join(unicode(d) for d in data)
 
-stats_hour = tweets.groupBy('HourStamp').count().orderBy('HourStamp').map(toCSVLine)
+stats_hour = tweets.groupBy('HourStamp')/
+    .count()/
+    .orderBy('HourStamp')/
+    .map(toCSVLine)
+    
 stats_hour.coalesce(1).saveAsTextFile(outDir + "HourCounts/")
 
-stats_day = tweets.groupBy('DayStamp').count().orderBy('DayStamp').map(toCSVLine)
+stats_day = tweets.groupBy('DayStamp')/
+    .count()/
+    .orderBy('DayStamp')/
+    .map(toCSVLine)
+    
 stats_day.coalesce(1).saveAsTextFile(outDir + "DayCounts/")
 
-stats_users = tweets.groupBy('actor.preferredUsername').count().orderBy(col("count").desc()).map(toCSVLine)
+stats_users = tweets.groupBy('actor.preferredUsername')/
+    .count()/
+    .orderBy(col("count").desc())/
+    .map(toCSVLine)
+    
 stats_users.coalesce(1).saveAsTextFile(outDir + "UserCounts/")
 
-stats_device = tweets.groupBy('generator.displayName').count().orderBy(col("count").desc()).map(toCSVLine)
+stats_device = tweets.groupBy('generator.displayName')/
+    .count()/
+    .orderBy(col("count").desc())/
+    .map(toCSVLine)
+    
 stats_device.coalesce(1).saveAsTextFile(outDir + "DeviceCounts/")
 
-stats_lang = tweets.groupBy('twitter_lang').count().orderBy(col("count").desc()).map(toCSVLine)
+stats_lang = tweets.groupBy('twitter_lang')/
+    .count()/
+    .orderBy(col("count").desc())/
+    .map(toCSVLine)
+    
 stats_lang.coalesce(1).saveAsTextFile(outDir + "LangCounts/")
 
-stats_location = tweets.groupBy('actor.location.displayName').count().orderBy(col("count").desc()).map(toCSVLine)
+stats_location = tweets.groupBy('actor.location.displayName')/
+    .count()/
+    .orderBy(col("count").desc())/
+    .map(toCSVLine)
+    
 stats_location.coalesce(1).saveAsTextFile(outDir + "LocationCounts/")
 ```
 
@@ -98,9 +122,26 @@ This step will create a word count file.
 
 ```{python}
 tweets.registerTempTable("tweets")
-t = sqlContext.sql("SELECT distinct id, postedTime, body, twitter_entities.hashtags[0].text FROM tweets")
+t = sqlContext.sql("SELECT distinct id, postedTime, body, twitter_entities.hashtags.text FROM tweets")
 
-stats_words = count_items(t.map(lambda t: cleanTextForWordCount(t[2])).flatMap(lambda x: x.split()))
+stats_words = count_items(t.map(lambda t: cleanTextForWordCount(t[2]))\
+    .flatMap(lambda x: x.split()))
+    
 stats_words.coalesce(1).saveAsTextFile(outDir + "WordCounts/")
+```
 
+## Step 5: Run a hashtag count.
+
+This step will create a similar hashtag count. Like the word count, the output file will not be sorted and you will need to sort the file.
+
+```{python}
+stats_hashtags = t.flatMap(lambda t: t[3])\
+    .map(lambda t: (t.lower(), 1))\
+    .reduceByKey(lambda x,y:x+y)\
+    .map(lambda x:(x[1],x[0]))\
+    .sortByKey(False)\
+    .map(lambda x: '\t'.join(unicode(i) for i in x))\
+    .repartition(1)
+
+stats_hashtags.coalesce(1).saveAsTextFile(outDir + "/HashtagCounts/")
 ```

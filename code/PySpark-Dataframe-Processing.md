@@ -40,10 +40,17 @@ We can also include the filter and orderBy functions too to limit or sort our da
 from pyspark.sql.functions import col
 
 # by top 20 locations
-tweets.groupBy("actor.location.displayName").count().orderBy(col("count").desc()).show()
+tweets.groupBy("actor.location.displayName")/
+    .count()/
+    .orderBy(col("count").desc())/
+    .show()
 
 # Tweets by users with more than 500k Followers Ordered by Tweet Time (postedTime)
-tweets.filter(tweets['actor.followersCount'] > 500000).select("actor.preferredUsername","body","postedTime","actor.followersCount").orderBy("postedTime").show()
+tweets.filter(tweets['actor.followersCount'] > 500000)/
+    .select("actor.preferredUsername","body","postedTime","actor.followersCount")/
+    .orderBy("postedTime")/
+    .show()
+    
 ```
 
 ## Step 4: Create Spark DataFrame
