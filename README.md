@@ -9,6 +9,7 @@ This repository provides template code for running Spark on [SOPHI](http://sophi
 | Topics                                                          |
 | --------------------------------------------------------------- |
 | [Twitter Gnip SQL-DataFrame Manipulation with PySpark](/code/PySpark-Dataframe-Processing.md)              |
+| [Twitter Gnip Summary Count Files with PySpark](/code/PySpark-Gnip-Twitter-Summary-Files.md)    |
 | [Twitter Gnip latent Dirichlet allocation with Scala](/code/Scala-LDA.md)    |
 
 ## How to access SOPHI
@@ -44,4 +45,8 @@ Once within a new Notebook, create a PySpark, Scala or SparkR (not available yet
 * [Matteo Redaelli's PySpark Twitter GitHub Repository](https://github.com/matteoredaelli/pyspark-examples)
 
 * [Duke Computational Statistics PySpark Tutorial](http://people.duke.edu/~ccc14/sta-663-2016/21A_Introduction_To_Spark.html)
+
+* [XD-Deng's GitHub Tutorial on PySpark](https://github.com/XD-DENG/Spark-practice)
+
+* [Charles Rawles' Using Apache Spark for Sports Analytics](https://content.pivotal.io/blog/how-data-science-assists-sports)
 

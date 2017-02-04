@@ -58,7 +58,7 @@ df = sqlContext.sql("SELECT id, postedTime, body, actor.id, actor.displayName, a
 
 ## Step 5: Export to CSV
 
-This step will export your file to a CSV. There are better alternatives (namely [spark-csv](https://github.com/databricks/spark-csv)) but these are not yet running on SOPHI yet. We'll update the code with instructions when it is available.
+This step will export your file to a CSV. There are other alternatives to exporting csvs (namely [spark-csv](https://github.com/databricks/spark-csv)) but these are not yet available on SOPHI. We'll update the code with instructions when it is available.
 
 ```{python}
 import csv
