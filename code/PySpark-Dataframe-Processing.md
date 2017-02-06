@@ -61,7 +61,7 @@ You can import in the `when` function that is used like a case when (if-else) st
 ```{python}
 from pyspark.sql.function import when
 
-tweets = tweets.withColumn("geotype", (when(col("verb") == "share", "Retweet").otherwise("Post")))
+tweets = tweets.withColumn("geolocation", (when(col("geo.type") == "Point", "Point").otherwise("Place")))
 ```
 
 ## Step 5: Registering the Dataframe as a Table
