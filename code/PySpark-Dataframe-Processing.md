@@ -6,14 +6,16 @@ Last, the `printSchema()` function will print the schema so you can see the stru
 
 ```{python}
 from pyspark.sql import SQLContext
-from pyspark.sql.functions import substring
-
 sqlContext = SQLContext(sc)
-tweets = sqlContext.read.json("/twitter/gnip/public/cities/Charlotte/charlotte062016.json")  # Create an RDD called tweets
 
-tweets.count() # Count the number of items in the RDD
+# Create an RDD called tweets
+tweets = sqlContext.read.json("/twitter/gnip/public/cities/Charlotte/charlotte062016.json")
 
-tweets.printSchema()  # Print the schema for tweets
+# Count the number of items in the RDD
+tweets.count() 
+
+# Print the schema for tweets
+tweets.printSchema()
 ```
 
 ## Step 2: Basic GroupBy & Count Functions
@@ -50,20 +52,29 @@ tweets.filter(tweets['actor.followersCount'] > 500000)/
     .select("actor.preferredUsername","body","postedTime","actor.followersCount")/
     .orderBy("postedTime")/
     .show()
-    
 ```
 
-## Step 4: Create Spark DataFrame
+## Step 4: If-then Statements Using Case
+
+You can import in the `when` function that is used like a case when (if-else) statement.
+
+```{python}
+from pyspark.sql.function import when
+
+tweets = tweets.withColumn("geotype", (when(col("verb") = "share", "Retweet").otherwise("Post")))
+```
+
+## Step 5: Registering the Dataframe as a Table
 
 Alternatively to creating RDD's, you can create a Spark DataFrame by registering the dataframe as a table.
 
 ```{python}
 tweets.registerTempTable('tweets')
 
-df = sqlContext.sql("SELECT id, postedTime, body, actor.id, actor.displayName, actor.location.displayName FROM tweets")
+df = sqlContext.sql("SELECT id, postedTime, body, actor.id FROM tweets")
 ```
 
-## Step 5: Export to CSV
+## Step 6: Export to CSV
 
 This step will export your file to a CSV. There are other alternatives to exporting csvs (namely [spark-csv](https://github.com/databricks/spark-csv)) but these are not yet available on SOPHI. We'll update the code with instructions when it is available.
 
