@@ -27,10 +27,10 @@ First, we groupBy the `verb` field which corresponds to Tweets (post) and Retwee
 Next, we groupBy the `geo.type` field to identify whether the geolocated Tweets are points or places (NULL).
 
 ```{python}
-#Retweets (share) vs Original Content Posts (post)
+# Retweets (share) vs Original Content Posts (post)
 tweets.groupBy("verb").count().show()
 
-#Geolocated Points vs non-Geolocated Points
+# Geolocated Points vs non-Geolocated Points
 tweets.groupBy("geo.type").count().show()
 ```
 
@@ -54,13 +54,14 @@ tweets.filter(tweets['actor.followersCount'] > 500000)/
     .show()
 ```
 
-## Step 4: If-then Statements Using Case
+## Step 4: If-then Statements Using When
 
 You can import in the `when` function that is used like a case when (if-else) statement.
 
 ```{python}
 from pyspark.sql.function import when
 
+# Create new column called "geolocation" based on when statement
 tweets = tweets.withColumn("geolocation", (when(col("geo.type") == "Point", "Point").otherwise("Place")))
 ```
 
@@ -74,20 +75,19 @@ tweets.registerTempTable('tweets')
 df = sqlContext.sql("SELECT id, postedTime, body, actor.id FROM tweets")
 ```
 
-## Step 6: Export to CSV
+## Step 6: Sampling and Exporting JSON file
 
-This step will export your file to a CSV. There are other alternatives to exporting csvs (namely [spark-csv](https://github.com/databricks/spark-csv)) but these are not yet available on SOPHI. We'll update the code with instructions when it is available.
+This step will take a sample of your dataframe and allow you to save the dataframe as a smaller JSON file.
+
+Please note that you will need to save the file to your own personal folder within the `/user/` directory.
 
 ```{python}
-import csv
-import cStringIO
+# sampling function: sample(withReplacement, fraction, seed=None)
+df = df.sample(False, 0.01, 42)
 
-def row2csv(row):
-    buffer = cStringIO.StringIO()
-    writer = csv.writer(buffer)
-    writer.writerow([str(s).encode("utf-8") for s in row])
-    buffer.seek(0)
-    return buffer.read().strip()
-
-df.rdd.map(row2csv).coalesce(1).saveAsTextFile("file.csv")
+df.coalesce(1).toJSON().saveAsTextFile("/user/rwesslen/savedjson/")
 ```
+
+Currently, there's not an easy way to save CSV files. Spark 2.0 does offer the [spark-csv](https://github.com/databricks/spark-csv); however, this capability is not yet set up on SOPHI.
+
+For more details, consider this [StackOverflow page](http://stackoverflow.com/questions/31385363/how-to-export-a-table-dataframe-in-pyspark-to-csv).
