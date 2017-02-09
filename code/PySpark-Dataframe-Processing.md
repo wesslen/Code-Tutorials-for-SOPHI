@@ -59,10 +59,12 @@ tweets.filter(tweets['actor.followersCount'] > 500000)/
 You can import in the `when` function that is used like a case when (if-else) statement.
 
 ```{python}
-from pyspark.sql.function import when
+from pyspark.sql.functions import when
 
 # Create new column called "geolocation" based on when statement
 tweets = tweets.withColumn("geolocation", (when(col("geo.type") == "Point", "Point").otherwise("Place")))
+
+tweets.groupBy("geolocation").count().show()
 ```
 
 ## Step 5: Registering the Dataframe as a Table
