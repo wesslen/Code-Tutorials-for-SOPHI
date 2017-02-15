@@ -9,7 +9,7 @@ from pyspark.sql import SQLContext
 sqlContext = SQLContext(sc)
 
 # Create an RDD called tweets
-tweets = sqlContext.read.json("/twitter/gnip/public/cities/Charlotte/charlotte062016.json")
+tweets = sqlContext.read.json("/twitter/gnip/public/social/CharlotteProtest.json")
 
 # Count the number of items in the RDD
 tweets.count() 
@@ -24,14 +24,14 @@ Next, let's explore two fields to groupby and count the tweets.
 
 First, we groupBy the `verb` field which corresponds to Tweets (post) and Retweets (share). Notice, this dataset only includes posts as the filtering rules for this dataset excluded Retweets.
 
-Next, we groupBy the `geo.type` field to identify whether the geolocated Tweets are points or places (NULL).
+Next, we groupBy the `geo.type` and `location.geo.type` fields to identify whether the geolocated Tweets are points or places (NULL).
 
 ```{python}
 # Retweets (share) vs Original Content Posts (post)
 tweets.groupBy("verb").count().show()
 
 # Geolocated Points vs non-Geolocated Points
-tweets.groupBy("geo.type").count().show()
+tweets.groupBy("location.geo.type","geo.type").count().show()
 ```
 
 ## Step 3: groupBy, filter and orderBy functions
