@@ -24,7 +24,7 @@ Next, let's explore two fields to groupby and count the tweets.
 
 First, we groupBy the `verb` field which corresponds to Tweets (post) and Retweets (share). Notice, this dataset only includes posts as the filtering rules for this dataset excluded Retweets.
 
-Next, we groupBy the `geo.type` and `location.geo.type` fields to identify whether the geolocated Tweets are points or places (NULL).
+Next, we groupBy the `geo.type` and `location.geo.type` fields to identify whether the geolocated Tweets are points, places (polygons) or no location (NULL).
 
 ```{python}
 # Retweets (share) vs Original Content Posts (post)
@@ -62,7 +62,9 @@ You can import in the `when` function that is used like a case when (if-else) st
 from pyspark.sql.functions import when
 
 # Create new column called "geolocation" based on when statement
-tweets = tweets.withColumn("geolocation", (when(col("geo.type") == "Point", "Point").otherwise("Place")))
+tweets = tweets.withColumn("geolocation", (when(col("geo.type") == "Point", "Point")\
+                                           .when(col("location.geo.type") == "Polygon", "Polygon")\
+                                           .otherwise("Place")))
 
 tweets.groupBy("geolocation").count().show()
 ```
